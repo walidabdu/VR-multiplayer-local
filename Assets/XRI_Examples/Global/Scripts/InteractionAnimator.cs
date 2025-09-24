@@ -11,7 +11,7 @@ namespace UnityEngine.XR.Content.Interaction
     {
         [SerializeField]
         [Tooltip("The timeline to drive with the activation button.")]
-        PlayableDirector m_ToAnimate;
+       public PlayableDirector m_ToAnimate;
 
         bool m_Animating;
         XRBaseController m_Controller;
