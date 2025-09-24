@@ -1,32 +1,30 @@
-// NetworkProjectile.cs
-using Unity.Netcode;
 using UnityEngine;
+using Unity.Netcode;
 
-[RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(NetworkObject))]
 public class NetworkProjectile : NetworkBehaviour
 {
     private Rigidbody _rb;
-    public float lifeTime = 5f;
+    private Vector3 _initialVelocity;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
     }
 
-    public override void OnNetworkSpawn()
+    // Called by the gun right after spawn
+    public void Init(Vector3 velocity)
     {
-        // If owner (client) spawned this and wants immediate local velocity, they can set it locally.
-        // But we already set initial velocity on server in NetworkGun.FireServerRpc (rb.velocity = ...),
-        // so this method is optional. Keep for safety or for visual-only tweaks.
-        Invoke(nameof(SelfDestruct), lifeTime);
+        _initialVelocity = velocity;
     }
 
-    private void SelfDestruct()
+    public override void OnNetworkSpawn()
     {
         if (IsServer)
-            NetworkObject.Despawn(true);
-        else
-            Destroy(gameObject);
+        {
+            // Apply velocity on server
+            _rb.velocity = _initialVelocity;
+        }
     }
 }
