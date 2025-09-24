@@ -1,8 +1,8 @@
 using UnityEngine;
 using Unity.Netcode;
 
-[RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(NetworkObject))]
+[RequireComponent(typeof(Rigidbody))]
 public class NetworkProjectile : NetworkBehaviour
 {
     private Rigidbody _rb;
@@ -13,7 +13,7 @@ public class NetworkProjectile : NetworkBehaviour
         _rb = GetComponent<Rigidbody>();
     }
 
-    // Called by the gun right after spawn
+    // Call this right after spawning from server
     public void Init(Vector3 velocity)
     {
         _initialVelocity = velocity;
@@ -23,7 +23,6 @@ public class NetworkProjectile : NetworkBehaviour
     {
         if (IsServer)
         {
-            // Apply velocity on server
             _rb.velocity = _initialVelocity;
         }
     }

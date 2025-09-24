@@ -33,17 +33,21 @@ namespace UnityEngine.XR.Content.Interaction
         }
 
         [ServerRpc]
-        private void SpawnProjectileServerRpc(Vector3 pos, Quaternion rot, ServerRpcParams rpcParams = default)
-        {
-            GameObject proj = Instantiate(projectilePrefab, pos, rot);
-            if (proj.TryGetComponent(out Rigidbody rb))
-            {
-                rb.AddForce(rot * Vector3.forward * launchSpeed, ForceMode.VelocityChange);
-            }
+private void SpawnProjectileServerRpc(Vector3 pos, Quaternion rot, ServerRpcParams rpcParams = default)
+{
+    GameObject proj = Instantiate(projectilePrefab, pos, rot);
+    var netObj = proj.GetComponent<NetworkObject>();
+    var rb = proj.GetComponent<Rigidbody>();
 
-            var netObj = proj.GetComponent<NetworkObject>();
-            if (netObj != null)
-                netObj.Spawn(true);
-        }
+    if (rb != null)
+    {
+        Vector3 velocity = rot * Vector3.forward * launchSpeed;
+        proj.GetComponent<NetworkProjectile>()?.Init(velocity); // set velocity
+    }
+
+    if (netObj != null)
+        netObj.Spawn(true);
+}
+
     }
 }
