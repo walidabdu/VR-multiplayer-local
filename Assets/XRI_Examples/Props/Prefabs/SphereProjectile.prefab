@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 9031775881104408020}
   - component: {fileID: 9031775881104408019}
   - component: {fileID: -5146042852928360596}
+  - component: {fileID: -8672031789392247856}
   m_Layer: 0
   m_Name: SphereProjectile
   m_TagString: Projectile
@@ -168,3 +169,16 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &-8672031789392247856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9031775881104408046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4792a16adf0cfe14896c87d8b601a988, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifeTime: 5
