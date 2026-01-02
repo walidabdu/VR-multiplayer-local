@@ -2,16 +2,16 @@ using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.XR.Interaction.Toolkit;
 
-[RequireComponent(typeof(XRGrabInteractable))]
+[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable))]
 [RequireComponent(typeof(NetworkObject))]
 public class NetworkGrabHandler : NetworkBehaviour
 {
-    private XRGrabInteractable _grab;
+    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _grab;
     private NetworkObject _netObj;
 
     private void Awake()
     {
-        _grab = GetComponent<XRGrabInteractable>();
+        _grab = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         _netObj = GetComponent<NetworkObject>();
     }
 

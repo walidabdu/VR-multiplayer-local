@@ -4,18 +4,18 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 namespace UnityEngine.XR.Content.Interaction
 {
-    [RequireComponent(typeof(XRGrabInteractable))]
+    [RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable))]
     public class NetworkVRGun : NetworkBehaviour
     {
         [SerializeField] private GameObject projectilePrefab;
         [SerializeField] private Transform startPoint;
         [SerializeField] private float launchSpeed = 10f;
 
-        private XRGrabInteractable grabInteractable;
+        private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
 
         private void Awake()
         {
-            grabInteractable = GetComponent<XRGrabInteractable>();
+            grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
             grabInteractable.activated.AddListener(OnTriggerPulled);
         }
 

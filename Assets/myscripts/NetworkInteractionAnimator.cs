@@ -9,12 +9,12 @@ namespace UnityEngine.XR.Content.Interaction{
     public class NetworkInteractionAnimator : NetworkBehaviour
     {
         private InteractionAnimator _animator;
-        private IXRSelectInteractable _interactable;
+        private UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable _interactable;
 
         private void Awake()
         {
             _animator = GetComponent<InteractionAnimator>();
-            _interactable = GetComponent<IXRSelectInteractable>();
+            _interactable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable>();
         }
 
         private void OnEnable()

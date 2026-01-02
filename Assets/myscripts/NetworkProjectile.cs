@@ -23,7 +23,7 @@ public class NetworkProjectile : NetworkBehaviour
     {
         if (IsServer)
         {
-            _rb.velocity = _initialVelocity;
+            _rb.linearVelocity = _initialVelocity;
         }
     }
 }
