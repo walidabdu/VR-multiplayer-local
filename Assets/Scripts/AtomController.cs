@@ -1,89 +1,123 @@
 using UnityEngine;
 
-public class AtomController : MonoBehaviour
+public class AtomUltimateController : MonoBehaviour
 {
-    [Header("Main Settings")]
-    public Transform xrOrigin;      // The VR Player's Root (XR Origin/Rig)
-    public Transform atomRoot;      // The Robot's Root
-    public Vector3 rootPositionOffset = new Vector3(0, 0, 2); // Atom is 2m in front
+    [Header("--- Main Setup ---")]
+    public Transform xrOrigin;       // Your XR Origin/Rig
+    public Transform atomRoot;       // The Robot's Root Parent
+    public Transform vrHead;         // Your Main Camera
 
-    [Header("Scale Calibration")]
-    [Tooltip("If Atom is bigger than you, set this > 1. If smaller, < 1.")]
-    public float movementScale = 1.0f;
+    [Header("--- Sizing & Lag ---")]
+    [Tooltip("Size Multiplier. Increase (1.2 - 1.5) if Atom is bigger/wider than you.")]
+    public float movementScale = 1.0f; 
 
-    // We use a custom class to make the Inspector clean and organized
+    [Tooltip("How fast the Body follows the Head. Lower = More Lag/Weight. Higher = Snappy.")]
+    public float bodyTurnSpeed = 3.0f; 
+
+    [Tooltip("Global offset to place Atom in front of you.")]
+    public Vector3 rootSpawnOffset = new Vector3(0, 0, 2);
+
+
+    // We use this Class to make the Inspector look clean and give you Offset fields back
     [System.Serializable]
-    public class LimbMap
+    public class LimbSettings
     {
-        public string name; // Just for labeling in Inspector
+        public string name; 
         public Transform vrTarget;
-        public Transform atomTarget;
-        
-        [Header("Offsets")]
-        [Tooltip("Position offset relative to the hand's rotation (e.g. forward/back along the arm)")]
+        public Transform atomIKTarget;
+
+        [Header("Adjustments")]
+        [Tooltip("Local position offset (X, Y, Z). Useful to slide hand forward/back.")]
         public Vector3 positionOffset;
         
-        [Tooltip("Rotation offset in degrees (X, Y, Z)")]
+        [Tooltip("Local rotation fix (e.g., 90, 0, 0) if wrist is twisted.")]
         public Vector3 rotationOffset;
     }
 
-    [Header("Limb Mappings")]
-    public LimbMap head = new LimbMap { name = "Head" };
-    public LimbMap leftHand = new LimbMap { name = "Left Hand" };
-    public LimbMap rightHand = new LimbMap { name = "Right Hand" };
+    [Header("--- Limb Configuration ---")]
+    public LimbSettings head = new LimbSettings { name = "Head" };
+    public LimbSettings leftHand = new LimbSettings { name = "Left Hand" };
+    public LimbSettings rightHand = new LimbSettings { name = "Right Hand" };
+
 
     void LateUpdate()
     {
-        if (xrOrigin == null || atomRoot == null) return;
+        if (xrOrigin == null || atomRoot == null || vrHead == null) return;
 
-        MoveAtomRoot();
+        // 1. Handle Body Movement (With Lag)
+        MoveAtomBody();
+
+        // 2. Handle Head (Instant Rotation)
+        UpdateHead();
+
+        // 3. Handle Hands (Relative to Head + Scaling)
+        UpdateHand(leftHand);
+        UpdateHand(rightHand);
+    }
+
+    void MoveAtomBody()
+    {
+        // POSITION: Follow player exactly + Offset
+        Vector3 targetPos = xrOrigin.position + rootSpawnOffset;
+        atomRoot.position = targetPos;
+
+        // ROTATION (The Mirror Effect):
+        // We want the body to rotate towards where the Head is looking, but SLOWLY.
+        Quaternion targetBodyRot = Quaternion.Euler(0, vrHead.eulerAngles.y, 0);
         
-        // Map the limbs using the settings
-        MapLimb(head);
-        MapLimb(leftHand);
-        MapLimb(rightHand);
+        // Slerp creates the smooth "Lag" effect
+        atomRoot.rotation = Quaternion.Slerp(atomRoot.rotation, targetBodyRot, Time.deltaTime * bodyTurnSpeed);
     }
 
-    void MoveAtomRoot()
+    void UpdateHead()
     {
-        // 1. Position: XR Origin + Offset
-        atomRoot.position = xrOrigin.position + rootPositionOffset;
+        if (head.vrTarget == null || head.atomIKTarget == null) return;
 
-        // 2. Rotation: Copy XR Origin's Y rotation only
-        Vector3 playerEuler = xrOrigin.eulerAngles;
-        atomRoot.rotation = Quaternion.Euler(0, playerEuler.y, 0);
+        // The Head rotates INSTANTLY to match the VR headset (plus manual offsets)
+        // Since the Body is lagging, this will cause the neck to twist naturally!
+        Quaternion targetRot = head.vrTarget.rotation * Quaternion.Euler(head.rotationOffset);
+        
+        head.atomIKTarget.rotation = targetRot;
+        
+        // Optional: If you want to adjust head height manually
+        // head.atomIKTarget.localPosition += head.positionOffset;
     }
 
-    void MapLimb(LimbMap limb)
+    void UpdateHand(LimbSettings limb)
     {
-        if (limb.vrTarget == null || limb.atomTarget == null) return;
+        if (limb.vrTarget == null || limb.atomIKTarget == null) return;
 
-        // --- STEP 1: Calculate the "Perfect Copy" (Relative Logic) ---
+        // --- STEP A: Calculate Position Relative to HEAD (Fixes crossing arms) ---
+        
+        // 1. Where is the hand relative to your face?
+        Vector3 distFromHead = limb.vrTarget.position - vrHead.position;
+        
+        // 2. Scale that distance (Fixes T-Rex arms)
+        distFromHead *= movementScale;
 
-        // Get VR Target's local pos/rot relative to the VR Player (XR Origin)
-        Vector3 localPos = xrOrigin.InverseTransformPoint(limb.vrTarget.position);
-        Quaternion localRot = Quaternion.Inverse(xrOrigin.rotation) * limb.vrTarget.rotation;
-
-        // Scale the movement (if robot is giant/small)
-        localPos *= movementScale;
-
-        // Convert that local space into Atom's World space
-        Vector3 targetPos = atomRoot.TransformPoint(localPos);
-        Quaternion targetRot = atomRoot.rotation * localRot;
-
-
-        // --- STEP 2: Apply the Manual Offsets ---
-
-        // Apply Rotation Offset (Rotate 'offset' degrees around the target's new axes)
-        Quaternion finalRot = targetRot * Quaternion.Euler(limb.rotationOffset);
-
-        // Apply Position Offset (Move 'offset' distance relative to the NEW rotation)
-        // This means if you increase Z, it moves "Forward" relative to where the hand is facing
-        Vector3 finalPos = targetPos + (finalRot * limb.positionOffset);
+        // 3. Apply that relative distance to the Robot's Head
+        // Note: We use the Robot Head's current position as the anchor
+        Vector3 targetWorldPos = head.atomIKTarget.position + distFromHead;
 
 
-        // --- STEP 3: Apply to Atom ---
-        limb.atomTarget.position = finalPos;
-        limb.atomTarget.rotation = finalRot;
+        // --- STEP B: Calculate Rotation ---
+        
+        // Copy the absolute rotation of the controller
+        Quaternion targetWorldRot = limb.vrTarget.rotation;
+
+
+        // --- STEP C: Apply Manual Offsets (The fields you wanted back) ---
+
+        // Apply Rotation Offset
+        Quaternion finalRot = targetWorldRot * Quaternion.Euler(limb.rotationOffset);
+
+        // Apply Position Offset (Local to the hand's facing direction)
+        // e.g. If you set Z = 0.1, it moves the hand 10cm "forward" along the fingers
+        Vector3 finalPos = targetWorldPos + (finalRot * limb.positionOffset);
+
+
+        // --- STEP D: Set Values ---
+        limb.atomIKTarget.position = finalPos;
+        limb.atomIKTarget.rotation = finalRot;
     }
 }

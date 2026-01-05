@@ -4605,26 +4605,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4d38341c45259d4ca497fb076223fd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomController
-  xrOrigin: {fileID: 0}
+  xrOrigin: {fileID: 6644439967745796447}
   atomRoot: {fileID: 700556094}
-  rootPositionOffset: {x: 0, y: 0, z: 2}
-  movementScale: 1
+  vrHead: {fileID: 6644439967690536318}
+  movementScale: 1.3
+  bodyTurnSpeed: 1
+  rootSpawnOffset: {x: 2, y: -1.4, z: 0}
   head:
     name: Head
-    vrTarget: {fileID: 0}
-    atomTarget: {fileID: 0}
-    positionOffset: {x: 0, y: 0, z: 0}
+    vrTarget: {fileID: 1460640887}
+    atomIKTarget: {fileID: 1651189410}
+    positionOffset: {x: 0, y: 1.5, z: 0}
     rotationOffset: {x: 0, y: 0, z: 0}
   leftHand:
     name: Left Hand
-    vrTarget: {fileID: 0}
-    atomTarget: {fileID: 0}
+    vrTarget: {fileID: 8629652}
+    atomIKTarget: {fileID: 596204160}
     positionOffset: {x: 0, y: 0, z: 0}
     rotationOffset: {x: 0, y: 0, z: 0}
   rightHand:
     name: Right Hand
-    vrTarget: {fileID: 0}
-    atomTarget: {fileID: 0}
+    vrTarget: {fileID: 2101013515}
+    atomIKTarget: {fileID: 99290149}
     positionOffset: {x: 0, y: 0, z: 0}
     rotationOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &701418627
