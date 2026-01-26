@@ -1,123 +1,131 @@
 using UnityEngine;
 
-public class AtomUltimateController : MonoBehaviour
+public class AtomRealSteel_PivotFix_V10 : MonoBehaviour
 {
-    [Header("--- Main Setup ---")]
-    public Transform xrOrigin;       // Your XR Origin/Rig
-    public Transform atomRoot;       // The Robot's Root Parent
-    public Transform vrHead;         // Your Main Camera
+    [Header("--- Main Assignments ---")]
+    public Transform xrOrigin;       
+    public Transform vrHead;         
+    public Transform atomRoot;       
+    public Transform bodyPivot;      
 
-    [Header("--- Sizing & Lag ---")]
-    [Tooltip("Size Multiplier. Increase (1.2 - 1.5) if Atom is bigger/wider than you.")]
-    public float movementScale = 1.0f; 
+    [Header("--- 1. Locomotion ---")]
+    public float movementScale = 1.3f;
+    public Vector3 atomArenaStartPos;
+    public bool recalibrateOnStart = true;
 
-    [Tooltip("How fast the Body follows the Head. Lower = More Lag/Weight. Higher = Snappy.")]
-    public float bodyTurnSpeed = 3.0f; 
+    [Header("--- 2. Boxing Stance ---")]
+    [Range(-90, 90)]
+    public float bodyStanceAngle = 30f; 
 
-    [Tooltip("Global offset to place Atom in front of you.")]
-    public Vector3 rootSpawnOffset = new Vector3(0, 0, 2);
+    [Header("--- 3. Ducking & Rolling ---")]
+    public float playerStandHeight = 1.7f;
+    public float duckDeadzone = 0.15f; 
+    public float rollLeanAngle = 35f; 
 
+    [Header("--- Smoothness ---")]
+    public float bodyTurnSpeed = 8.0f;
+    public float duckSmoothness = 10.0f;
 
-    // We use this Class to make the Inspector look clean and give you Offset fields back
-    [System.Serializable]
-    public class LimbSettings
+    // Internal Variables to remember your Inspector settings
+    private Vector3 initialPivotLocalPos;
+    private Quaternion initialPivotLocalRot;
+    private float currentLean = 0f;
+    private float currentYDrop = 0f;
+
+    void Start()
     {
-        public string name; 
-        public Transform vrTarget;
-        public Transform atomIKTarget;
-
-        [Header("Adjustments")]
-        [Tooltip("Local position offset (X, Y, Z). Useful to slide hand forward/back.")]
-        public Vector3 positionOffset;
+        if (bodyPivot != null)
+        {
+            // NEW: We capture where you put the hips in the Inspector
+            initialPivotLocalPos = bodyPivot.localPosition;
+            initialPivotLocalRot = bodyPivot.localRotation;
+        }
         
-        [Tooltip("Local rotation fix (e.g., 90, 0, 0) if wrist is twisted.")]
-        public Vector3 rotationOffset;
+        if (recalibrateOnStart)
+        {
+            playerStandHeight = vrHead.position.y;
+            atomArenaStartPos = atomRoot.position;
+        }
     }
 
-    [Header("--- Limb Configuration ---")]
+    void LateUpdate()
+    {
+        if (xrOrigin == null || atomRoot == null || bodyPivot == null) return;
+
+        HandleMovementAndStance();
+        HandleDuckingAndRolling();
+        HandleHead();
+        HandleLimb(leftHand);
+        HandleLimb(rightHand);
+    }
+
+    void HandleMovementAndStance()
+    {
+        // ROOT POSITION (Floor)
+        Vector3 physicalOffset = vrHead.position - xrOrigin.position;
+        physicalOffset.y = 0; 
+        physicalOffset *= movementScale;
+        atomRoot.position = atomArenaStartPos + physicalOffset;
+
+        // ROOT ROTATION (Facing)
+        float lookY = vrHead.eulerAngles.y;
+        Quaternion targetFacing = Quaternion.Euler(0, lookY + bodyStanceAngle, 0);
+        atomRoot.rotation = Quaternion.Slerp(atomRoot.rotation, targetFacing, Time.deltaTime * bodyTurnSpeed);
+    }
+
+    void HandleDuckingAndRolling()
+    {
+        // 1. Calculate the Drop
+        float heightDiff = playerStandHeight - vrHead.position.y;
+        if (heightDiff < duckDeadzone) heightDiff = 0;
+        float targetYDrop = heightDiff * movementScale;
+        currentYDrop = Mathf.Lerp(currentYDrop, targetYDrop, Time.deltaTime * duckSmoothness);
+
+        // 2. Calculate the Lean
+        float targetLean = 0f;
+        if (heightDiff > duckDeadzone && vrHead.forward.y < -0.2f)
+        {
+            targetLean = rollLeanAngle;
+        }
+        currentLean = Mathf.Lerp(currentLean, targetLean, Time.deltaTime * duckSmoothness);
+
+        // 3. RESET TO SAVED INSPECTOR VALUES
+        // Instead of (0,0,0), we use the initialPivotLocalPos we saved in Start()
+        bodyPivot.localRotation = initialPivotLocalRot;
+        bodyPivot.localPosition = initialPivotLocalPos - new Vector3(0, currentYDrop, 0);
+
+        // 4. ROTATE AROUND HIPS
+        // We use bodyPivot.right so it always leans "forward" relative to where Atom is facing
+        bodyPivot.RotateAround(bodyPivot.position, bodyPivot.right, currentLean);
+    }
+
+    // --- Limb Config ---
+    [Header("--- Limb Config ---")]
     public LimbSettings head = new LimbSettings { name = "Head" };
     public LimbSettings leftHand = new LimbSettings { name = "Left Hand" };
     public LimbSettings rightHand = new LimbSettings { name = "Right Hand" };
 
-
-    void LateUpdate()
-    {
-        if (xrOrigin == null || atomRoot == null || vrHead == null) return;
-
-        // 1. Handle Body Movement (With Lag)
-        MoveAtomBody();
-
-        // 2. Handle Head (Instant Rotation)
-        UpdateHead();
-
-        // 3. Handle Hands (Relative to Head + Scaling)
-        UpdateHand(leftHand);
-        UpdateHand(rightHand);
+    [System.Serializable]
+    public class LimbSettings {
+        public string name;
+        public Transform vrTarget;
+        public Transform atomIKTarget;
+        public Vector3 positionOffset;
+        public Vector3 rotationOffset;
     }
 
-    void MoveAtomBody()
-    {
-        // POSITION: Follow player exactly + Offset
-        Vector3 targetPos = xrOrigin.position + rootSpawnOffset;
-        atomRoot.position = targetPos;
-
-        // ROTATION (The Mirror Effect):
-        // We want the body to rotate towards where the Head is looking, but SLOWLY.
-        Quaternion targetBodyRot = Quaternion.Euler(0, vrHead.eulerAngles.y, 0);
-        
-        // Slerp creates the smooth "Lag" effect
-        atomRoot.rotation = Quaternion.Slerp(atomRoot.rotation, targetBodyRot, Time.deltaTime * bodyTurnSpeed);
+    void HandleHead() {
+        if (head.vrTarget == null) return;
+        head.atomIKTarget.rotation = head.vrTarget.rotation * Quaternion.Euler(head.rotationOffset);
     }
 
-    void UpdateHead()
-    {
-        if (head.vrTarget == null || head.atomIKTarget == null) return;
-
-        // The Head rotates INSTANTLY to match the VR headset (plus manual offsets)
-        // Since the Body is lagging, this will cause the neck to twist naturally!
-        Quaternion targetRot = head.vrTarget.rotation * Quaternion.Euler(head.rotationOffset);
-        
-        head.atomIKTarget.rotation = targetRot;
-        
-        // Optional: If you want to adjust head height manually
-        // head.atomIKTarget.localPosition += head.positionOffset;
-    }
-
-    void UpdateHand(LimbSettings limb)
-    {
-        if (limb.vrTarget == null || limb.atomIKTarget == null) return;
-
-        // --- STEP A: Calculate Position Relative to HEAD (Fixes crossing arms) ---
-        
-        // 1. Where is the hand relative to your face?
+    void HandleLimb(LimbSettings limb) {
+        if (limb.vrTarget == null) return;
         Vector3 distFromHead = limb.vrTarget.position - vrHead.position;
-        
-        // 2. Scale that distance (Fixes T-Rex arms)
         distFromHead *= movementScale;
-
-        // 3. Apply that relative distance to the Robot's Head
-        // Note: We use the Robot Head's current position as the anchor
-        Vector3 targetWorldPos = head.atomIKTarget.position + distFromHead;
-
-
-        // --- STEP B: Calculate Rotation ---
-        
-        // Copy the absolute rotation of the controller
-        Quaternion targetWorldRot = limb.vrTarget.rotation;
-
-
-        // --- STEP C: Apply Manual Offsets (The fields you wanted back) ---
-
-        // Apply Rotation Offset
-        Quaternion finalRot = targetWorldRot * Quaternion.Euler(limb.rotationOffset);
-
-        // Apply Position Offset (Local to the hand's facing direction)
-        // e.g. If you set Z = 0.1, it moves the hand 10cm "forward" along the fingers
-        Vector3 finalPos = targetWorldPos + (finalRot * limb.positionOffset);
-
-
-        // --- STEP D: Set Values ---
-        limb.atomIKTarget.position = finalPos;
-        limb.atomIKTarget.rotation = finalRot;
+        Vector3 targetPos = head.atomIKTarget.position + distFromHead;
+        Quaternion targetRot = limb.vrTarget.rotation * Quaternion.Euler(limb.rotationOffset);
+        limb.atomIKTarget.position = targetPos + (targetRot * limb.positionOffset);
+        limb.atomIKTarget.rotation = targetRot;
     }
 }
