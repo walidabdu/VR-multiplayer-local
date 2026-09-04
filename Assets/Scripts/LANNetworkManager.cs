@@ -14,6 +14,10 @@ public class LANNetworkManager : MonoBehaviour
     public int broadcastPort = 47777;   // discovery
     public ushort gamePort = 7777;      // actual gameplay
 
+    [Header("Play Mode Hints")]
+    [SerializeField] private bool logStartupHint = true;
+    [SerializeField] private float startupHintDelaySeconds = 1.0f;
+
     [Header("UI Debugging")]
     public TextMeshProUGUI debugText;   // assign in inspector
     public int maxLines = 50;
@@ -24,6 +28,17 @@ public class LANNetworkManager : MonoBehaviour
 
     private ConcurrentQueue<string> logQueue = new ConcurrentQueue<string>();
     private ConcurrentQueue<System.Action> mainThreadActions = new ConcurrentQueue<System.Action>();
+    private bool startupHintLogged;
+
+    private void Start()
+    {
+        if (!Application.isPlaying || !logStartupHint)
+        {
+            return;
+        }
+
+        Invoke(nameof(LogStartupHintIfIdle), startupHintDelaySeconds);
+    }
 
     // ---------------- API ----------------
     public void StartHost()
@@ -186,6 +201,17 @@ public class LANNetworkManager : MonoBehaviour
             if (ip.AddressFamily == AddressFamily.InterNetwork)
                 return ip.ToString();
         return "127.0.0.1";
+    }
+
+    private void LogStartupHintIfIdle()
+    {
+        if (startupHintLogged || NetworkManager.Singleton == null || NetworkManager.Singleton.IsListening)
+        {
+            return;
+        }
+
+        startupHintLogged = true;
+        Log("[LAN] Network is idle. Plain Play Mode does not spawn PlayerAvatar until StartHost or StartClient is invoked.");
     }
 
     private void OnDestroy() => StopThreads();

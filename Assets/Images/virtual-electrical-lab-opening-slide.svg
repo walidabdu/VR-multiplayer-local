@@ -1,0 +1,183 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgMain" x1="177" y1="120" x2="1724" y2="938" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#08111F"/>
+      <stop offset="0.52" stop-color="#0A1A31"/>
+      <stop offset="1" stop-color="#050A14"/>
+    </linearGradient>
+    <radialGradient id="glowLeft" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(450 360) rotate(32.7) scale(665 486)">
+      <stop stop-color="#14D7FF" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#14D7FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowRight" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1460 500) rotate(124.9) scale(630 550)">
+      <stop stop-color="#FFB341" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#FFB341" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="panelStroke" x1="1090" y1="180" x2="1640" y2="850" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#53E1FF" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#53E1FF" stop-opacity="0.18"/>
+    </linearGradient>
+    <linearGradient id="heroText" x1="236" y1="309" x2="809" y2="588" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EAF8FF"/>
+      <stop offset="0.4" stop-color="#8AE9FF"/>
+      <stop offset="1" stop-color="#FFFFFF"/>
+    </linearGradient>
+    <linearGradient id="accentText" x1="235" y1="418" x2="785" y2="472" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFD58C"/>
+      <stop offset="1" stop-color="#FF9F2E"/>
+    </linearGradient>
+    <linearGradient id="chipFill" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#132640"/>
+      <stop offset="1" stop-color="#0D1A30"/>
+    </linearGradient>
+    <linearGradient id="cardFill" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#0E2038" stop-opacity="0.96"/>
+      <stop offset="1" stop-color="#081320" stop-opacity="0.78"/>
+    </linearGradient>
+    <filter id="softBlur" x="-100" y="-100" width="2120" height="1280" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="50"/>
+    </filter>
+    <filter id="panelShadow" x="985" y="120" width="736" height="786" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="26" stdDeviation="26" flood-color="#06101D" flood-opacity="0.45"/>
+    </filter>
+    <filter id="smallGlow" x="-50" y="-50" width="120" height="120" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <pattern id="gridPattern" x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" stroke="#79DFFF" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+    <pattern id="dotPattern" x="0" y="0" width="18" height="18" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#A7ECFF" fill-opacity="0.18"/>
+    </pattern>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#bgMain)"/>
+  <rect width="1920" height="1080" fill="url(#gridPattern)"/>
+  <rect x="1158" y="127" width="554" height="554" rx="277" fill="url(#dotPattern)" opacity="0.3"/>
+  <g filter="url(#softBlur)">
+    <circle cx="410" cy="340" r="240" fill="url(#glowLeft)"/>
+    <circle cx="1450" cy="480" r="240" fill="url(#glowRight)"/>
+  </g>
+
+  <path d="M0 860C218 790 432 760 698 798C902 828 1068 908 1307 901C1539 894 1724 777 1920 696V1080H0V860Z" fill="#06101B" fill-opacity="0.74"/>
+  <path d="M0 920C287 835 559 837 826 898C1091 959 1338 988 1920 891" stroke="#65DFFF" stroke-opacity="0.12" stroke-width="2"/>
+
+  <g opacity="0.65">
+    <path d="M118 154H275" stroke="#30DFFF" stroke-width="2"/>
+    <circle cx="295" cy="154" r="6" fill="#30DFFF"/>
+    <path d="M295 154H432V225H547" stroke="#30DFFF" stroke-width="2"/>
+    <circle cx="566" cy="225" r="6" fill="#FFB341"/>
+    <path d="M566 225H654V152H810" stroke="#FFB341" stroke-width="2"/>
+    <circle cx="830" cy="152" r="6" fill="#FFB341"/>
+    <path d="M1215 918H1380V870H1532V820H1678" stroke="#53E1FF" stroke-opacity="0.36" stroke-width="2"/>
+    <circle cx="1532" cy="870" r="5" fill="#53E1FF" fill-opacity="0.9"/>
+    <circle cx="1380" cy="870" r="5" fill="#FFB341" fill-opacity="0.9"/>
+  </g>
+
+  <g>
+    <rect x="122" y="144" width="286" height="52" rx="26" fill="#0F223A" fill-opacity="0.9" stroke="#4EDFFF" stroke-opacity="0.35"/>
+    <circle cx="155" cy="170" r="8" fill="#2EE6FF"/>
+    <text x="180" y="178" fill="#BDEFFF" font-family="Aptos, Segoe UI, sans-serif" font-size="22" letter-spacing="3">IMMERSIVE STEM EXPERIENCE</text>
+  </g>
+
+  <g>
+    <text x="120" y="348" fill="url(#heroText)" font-family="Bahnschrift, Aptos Display, Segoe UI, sans-serif" font-size="112" font-weight="700" letter-spacing="2">VIRTUAL</text>
+    <text x="120" y="470" fill="url(#accentText)" font-family="Bahnschrift, Aptos Display, Segoe UI, sans-serif" font-size="112" font-weight="700" letter-spacing="2">ELECTRICAL</text>
+    <text x="120" y="592" fill="url(#heroText)" font-family="Bahnschrift, Aptos Display, Segoe UI, sans-serif" font-size="112" font-weight="700" letter-spacing="2">LAB</text>
+
+    <text x="126" y="690" fill="#D9EEFF" font-family="Aptos, Segoe UI, sans-serif" font-size="35" font-weight="400">
+      <tspan x="126" dy="0">A VR-powered environment for building circuits, testing ideas,</tspan>
+      <tspan x="126" dy="48">and learning electrical concepts through safe, interactive experiments.</tspan>
+    </text>
+
+    <path d="M126 754H675" stroke="#6CDFFF" stroke-opacity="0.28" stroke-width="2"/>
+  </g>
+
+  <g>
+    <rect x="122" y="796" width="176" height="54" rx="27" fill="url(#chipFill)" stroke="#42DBFF" stroke-opacity="0.35"/>
+    <text x="155" y="831" fill="#E7FAFF" font-family="Aptos, Segoe UI, sans-serif" font-size="24" font-weight="600">VR-first learning</text>
+
+    <rect x="316" y="796" width="192" height="54" rx="27" fill="url(#chipFill)" stroke="#42DBFF" stroke-opacity="0.35"/>
+    <text x="347" y="831" fill="#E7FAFF" font-family="Aptos, Segoe UI, sans-serif" font-size="24" font-weight="600">Real-time feedback</text>
+
+    <rect x="526" y="796" width="206" height="54" rx="27" fill="url(#chipFill)" stroke="#FFB341" stroke-opacity="0.38"/>
+    <text x="559" y="831" fill="#FFF1D8" font-family="Aptos, Segoe UI, sans-serif" font-size="24" font-weight="600">Collaborative practice</text>
+  </g>
+
+  <g>
+    <rect x="122" y="892" width="186" height="118" rx="28" fill="url(#cardFill)" stroke="#44DBFF" stroke-opacity="0.24"/>
+    <text x="152" y="936" fill="#7DE8FF" font-family="Aptos, Segoe UI, sans-serif" font-size="18" letter-spacing="2.4">BUILD</text>
+    <text x="152" y="988" fill="#F4FBFF" font-family="Bahnschrift, Aptos Display, sans-serif" font-size="38" font-weight="700">Circuits</text>
+
+    <rect x="330" y="892" width="186" height="118" rx="28" fill="url(#cardFill)" stroke="#44DBFF" stroke-opacity="0.24"/>
+    <text x="360" y="936" fill="#7DE8FF" font-family="Aptos, Segoe UI, sans-serif" font-size="18" letter-spacing="2.4">MEASURE</text>
+    <text x="360" y="988" fill="#F4FBFF" font-family="Bahnschrift, Aptos Display, sans-serif" font-size="38" font-weight="700">Signals</text>
+
+    <rect x="538" y="892" width="214" height="118" rx="28" fill="url(#cardFill)" stroke="#FFB341" stroke-opacity="0.3"/>
+    <text x="568" y="936" fill="#FFC86D" font-family="Aptos, Segoe UI, sans-serif" font-size="18" letter-spacing="2.4">EXPLORE</text>
+    <text x="568" y="988" fill="#FFF7EA" font-family="Bahnschrift, Aptos Display, sans-serif" font-size="38" font-weight="700">Concepts</text>
+  </g>
+
+  <g filter="url(#panelShadow)">
+    <rect x="1048" y="158" width="596" height="690" rx="42" fill="#0B1728" fill-opacity="0.58" stroke="url(#panelStroke)" stroke-width="2.2"/>
+    <rect x="1080" y="192" width="532" height="622" rx="32" fill="#0C1D33" fill-opacity="0.72" stroke="#A2F0FF" stroke-opacity="0.11"/>
+
+    <circle cx="1346" cy="462" r="191" stroke="#56E1FF" stroke-opacity="0.18" stroke-width="2"/>
+    <circle cx="1346" cy="462" r="148" stroke="#56E1FF" stroke-opacity="0.12" stroke-width="2"/>
+    <circle cx="1346" cy="462" r="10" fill="#FFB341"/>
+    <circle cx="1346" cy="462" r="42" stroke="#FFB341" stroke-opacity="0.35" stroke-width="2"/>
+
+    <path d="M1166 410H1240L1270 372H1428L1454 410H1528" stroke="#63E3FF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M1200 448C1214 422 1242 404 1272 404H1420C1450 404 1478 422 1492 448" stroke="#63E3FF" stroke-width="5" stroke-linecap="round"/>
+    <rect x="1272" y="430" width="146" height="88" rx="26" stroke="#F3FBFF" stroke-opacity="0.88" stroke-width="6"/>
+    <rect x="1290" y="447" width="110" height="54" rx="18" fill="#071321" stroke="#63E3FF" stroke-opacity="0.4"/>
+    <path d="M1250 523L1213 578H1134" stroke="#63E3FF" stroke-width="3" stroke-linecap="round"/>
+    <path d="M1440 523L1477 578H1555" stroke="#FFB341" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="1134" cy="578" r="10" fill="#63E3FF"/>
+    <circle cx="1555" cy="578" r="10" fill="#FFB341"/>
+
+    <path d="M1158 608H1238L1263 574H1332" stroke="#63E3FF" stroke-opacity="0.78" stroke-width="3" stroke-linecap="round"/>
+    <path d="M1360 574H1428L1470 628H1548" stroke="#FFB341" stroke-opacity="0.9" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="1263" cy="574" r="8" fill="#63E3FF"/>
+    <circle cx="1470" cy="628" r="8" fill="#FFB341"/>
+
+    <rect x="1158" y="668" width="388" height="92" rx="26" fill="#09111D" fill-opacity="0.9" stroke="#56E1FF" stroke-opacity="0.18"/>
+    <text x="1192" y="706" fill="#78E8FF" font-family="Aptos, Segoe UI, sans-serif" font-size="18" letter-spacing="2.8">LIVE LAB PANEL</text>
+    <path d="M1192 732C1210 708 1236 718 1250 694C1264 670 1294 671 1308 698C1322 725 1350 727 1366 702C1384 675 1414 688 1424 718C1437 760 1473 736 1507 700" stroke="#56E1FF" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <g>
+    <rect x="1484" y="222" width="202" height="126" rx="28" fill="#0A1525" fill-opacity="0.88" stroke="#56E1FF" stroke-opacity="0.24"/>
+    <text x="1514" y="263" fill="#8FEAFF" font-family="Aptos, Segoe UI, sans-serif" font-size="18" letter-spacing="2.5">VOLTAGE</text>
+    <text x="1514" y="320" fill="#F2FBFF" font-family="Bahnschrift, Aptos Display, sans-serif" font-size="54" font-weight="700">12.0V</text>
+  </g>
+
+  <g>
+    <rect x="982" y="608" width="206" height="126" rx="28" fill="#0A1525" fill-opacity="0.92" stroke="#FFB341" stroke-opacity="0.28"/>
+    <text x="1014" y="649" fill="#FFD18A" font-family="Aptos, Segoe UI, sans-serif" font-size="18" letter-spacing="2.5">CURRENT</text>
+    <text x="1014" y="706" fill="#FFF7EA" font-family="Bahnschrift, Aptos Display, sans-serif" font-size="54" font-weight="700">2.5A</text>
+  </g>
+
+  <g opacity="0.95">
+    <circle cx="1086" cy="266" r="9" fill="#56E1FF"/>
+    <circle cx="1086" cy="266" r="34" fill="#56E1FF" fill-opacity="0.14"/>
+    <circle cx="1646" cy="736" r="9" fill="#FFB341"/>
+    <circle cx="1646" cy="736" r="34" fill="#FFB341" fill-opacity="0.16"/>
+    <circle cx="1520" cy="390" r="7" fill="#56E1FF"/>
+    <circle cx="1170" cy="660" r="7" fill="#56E1FF"/>
+    <circle cx="1548" cy="628" r="7" fill="#FFB341"/>
+  </g>
+
+  <g opacity="0.84">
+    <path d="M1704 190V330" stroke="#8EEFFF" stroke-opacity="0.28" stroke-width="2"/>
+    <path d="M1704 342V460" stroke="#8EEFFF" stroke-opacity="0.12" stroke-width="2"/>
+    <text x="1700" y="492" fill="#A8EDFF" font-family="Aptos, Segoe UI, sans-serif" font-size="18" text-anchor="end" letter-spacing="2.5">SIMULATE</text>
+    <text x="1700" y="524" fill="#A8EDFF" font-family="Aptos, Segoe UI, sans-serif" font-size="18" text-anchor="end" letter-spacing="2.5">INTERACT</text>
+    <text x="1700" y="556" fill="#A8EDFF" font-family="Aptos, Segoe UI, sans-serif" font-size="18" text-anchor="end" letter-spacing="2.5">DISCOVER</text>
+  </g>
+
+  <g>
+    <text x="1600" y="994" fill="#8CB5D0" font-family="Aptos, Segoe UI, sans-serif" font-size="22" text-anchor="end">Opening Slide Concept</text>
+    <text x="1600" y="1028" fill="#DDEFFF" font-family="Aptos, Segoe UI, sans-serif" font-size="28" text-anchor="end">Virtual Electrical Lab</text>
+  </g>
+</svg>

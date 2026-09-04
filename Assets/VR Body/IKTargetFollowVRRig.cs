@@ -3,41 +3,42 @@
 [System.Serializable]
 public class VRMap
 {
-    public Transform vrTarget;   // XR head / hand
-    public Transform ikTarget;   // IK target on Atom
-    public Vector3 positionOffset;
-    public Vector3 rotationOffset;
+    public Transform vrTarget;
+    public Transform ikTarget;
+    public Vector3 trackingPositionOffset;
+    public Vector3 trackingRotationOffset;
 
-    public void Map(Transform charlieRoot, Transform atomRoot)
+    public void Map()
     {
-        // 1️⃣ Get motion relative to Charlie
-        Vector3 localPos = charlieRoot.InverseTransformPoint(vrTarget.position);
-
-        // 2️⃣ Apply same motion relative to Atom
-        ikTarget.position = atomRoot.TransformPoint(localPos + positionOffset);
-
-        // 3️⃣ Rotation (direct mirror)
-        ikTarget.rotation = vrTarget.rotation * Quaternion.Euler(rotationOffset);
+        ikTarget.position = vrTarget.TransformPoint(trackingPositionOffset);
+        ikTarget.rotation = vrTarget.rotation * Quaternion.Euler(trackingRotationOffset);
     }
 }
 
 public class IKTargetFollowVRRig : MonoBehaviour
 {
-    [Header("Roots")]
-    public Transform charlieRoot; // XR Origin (Camera Offset)
-    public Transform atomRoot;    // Atom hips / root
+    [Range(0f, 1f)]
+    public float turnSmoothness = 0.1f;
 
-    [Header("Mappings")]
     public VRMap head;
     public VRMap leftHand;
     public VRMap rightHand;
 
+    public Vector3 headBodyPositionOffset;
+    public float headBodyYawOffset;
+
     void LateUpdate()
     {
-        if (!charlieRoot || !atomRoot) return;
+        transform.position = head.ikTarget.position + headBodyPositionOffset;
 
-        head.Map(charlieRoot, atomRoot);
-        leftHand.Map(charlieRoot, atomRoot);
-        rightHand.Map(charlieRoot, atomRoot);
+        float yaw = head.vrTarget.eulerAngles.y + headBodyYawOffset;
+        transform.rotation = Quaternion.Lerp(
+            transform.rotation,
+            Quaternion.Euler(0f, yaw, 0f),
+            turnSmoothness);
+
+        head.Map();
+        leftHand.Map();
+        rightHand.Map();
     }
 }
